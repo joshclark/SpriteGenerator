@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="LayoutProperties.cs" />
     <Compile Include="Placement.cs" />
+    <Compile Include="SpriteConfigFile.cs" />
     <Compile Include="SpritesForm.cs">
       <SubType>Form</SubType>
     </Compile>
