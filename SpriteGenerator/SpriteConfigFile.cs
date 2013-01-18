@@ -14,6 +14,7 @@ namespace SpriteGenerator
         private const string MarginWidth = "MarginWidth";
         private const string ImagesInRow = "ImagesInRow";
         private const string ImagesInColumn = "ImagesInColumn";
+        private const string CssClassPrefix = "CssClassPrefix";
 
 
         private readonly string _configFile;
@@ -49,7 +50,8 @@ namespace SpriteGenerator
                 inputFilePaths = GetInputFiles(),
                 outputSpriteFilePath = GetOutputImageFile(),
                 outputCssFilePath = GetOutputCssFile(),
-                layout = GetLayout(),
+                cssClassPrefix = GetStringValueOrDefault(CssClassPrefix, "sprite"),
+                layout = GetStringValueOrDefault(Layout, "Automatic"),
                 distanceBetweenImages = GetIntValueOrDefault(DistanceBetweenImages, 0),
                 marginWidth = GetIntValueOrDefault(MarginWidth, 0),
                 imagesInRow = GetIntValueOrDefault(ImagesInRow, 0),
@@ -69,14 +71,14 @@ namespace SpriteGenerator
             return defaultValue;
         }
 
-        private string GetLayout()
+        private string GetStringValueOrDefault(string keyName, string defaultValue)
         {
-            if (_settings.ContainsKey(Layout))
+            if (_settings.ContainsKey(keyName))
             {
-                return _settings[Layout];
+                return _settings[keyName];
             }
 
-            return "Automatic";
+            return defaultValue;
         }
 
         private string GetOutputCssFile()

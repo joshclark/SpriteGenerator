@@ -29,23 +29,22 @@ namespace SpriteGenerator
             StreamWriter cssFile = File.CreateText(layoutProp.outputCssFilePath);
             Image resultSprite = null;
 
-            cssFile.WriteLine(".sprite { background-image: url('" +
-                relativeSpriteImagePath(layoutProp.outputSpriteFilePath, layoutProp.outputCssFilePath) +
-                "'); background-color: transparent; background-repeat: no-repeat; }");
+            var spriteImagePath = relativeSpriteImagePath(layoutProp.outputSpriteFilePath, layoutProp.outputCssFilePath);
+            var backgroundCss = String.Format("background: url('{0}') transparent no-repeat;", spriteImagePath);
 
             switch (layoutProp.layout)
             {
                 case "Automatic":
-                    resultSprite = generateAutomaticLayout(cssFile);
+                    resultSprite = generateAutomaticLayout(cssFile, backgroundCss);
                     break;
                 case "Horizontal":
-                    resultSprite = generateHorizontalLayout(cssFile);
+                    resultSprite = generateHorizontalLayout(cssFile, backgroundCss);
                     break;
                 case "Vertical":
-                    resultSprite = generateVerticalLayout(cssFile);
+                    resultSprite = generateVerticalLayout(cssFile, backgroundCss);
                     break;
                 case "Rectangular":
-                    resultSprite = generateRectangularLayout(cssFile);
+                    resultSprite = generateRectangularLayout(cssFile, backgroundCss);
                     break;
                 default:
                     break;
@@ -68,12 +67,17 @@ namespace SpriteGenerator
             images = new Dictionary<int, Image>();
             cssClassNames = new Dictionary<int, string>();
 
+            var prefix = String.IsNullOrEmpty(layoutProp.cssClassPrefix) ? String.Empty : layoutProp.cssClassPrefix + "-";
+
             for (int i = 0; i < layoutProp.inputFilePaths.Length; i++)
             {
                 Image img = Image.FromFile(layoutProp.inputFilePaths[i]);
                 images.Add(i, img);
-                string[] splittedFilePath = layoutProp.inputFilePaths[i].Split('\\');
-                cssClassNames.Add(i, splittedFilePath[splittedFilePath.Length - 1].Split('.')[0]);
+
+                var filename = Path.GetFileNameWithoutExtension(layoutProp.inputFilePaths[i]);
+                var outputFileName = Path.GetFileNameWithoutExtension(layoutProp.outputCssFilePath);
+                var cssName = String.Format("{0}{1}-{2}", prefix, outputFileName, filename);
+                cssClassNames.Add(i, cssName);
             }
         }
 
@@ -86,9 +90,9 @@ namespace SpriteGenerator
         }
 
         //CSS line
-        private string CssLine(string cssClassName, Rectangle rectangle)
+        private string CssLine(string cssClassName, Rectangle rectangle, string backgroundCss)
         {
-            string line = "." + cssClassName + " { width: " + rectangle.Width.ToString() + "px; height: " + rectangle.Height.ToString() + 
+            string line = "." + cssClassName + " { " + backgroundCss + " width: " + rectangle.Width.ToString() + "px; height: " + rectangle.Height.ToString() + 
                 "px; background-position: " + (-1 * rectangle.X).ToString() + "px " + (-1 * rectangle.Y).ToString() + "px; }";
             return line;
         }
@@ -116,7 +120,7 @@ namespace SpriteGenerator
         }
 
         //Automatic layout
-        private Image generateAutomaticLayout(StreamWriter cssFile)
+        private Image generateAutomaticLayout(StreamWriter cssFile, string backgroundCss)
         {
             var sortedByArea = from m in CreateModules()
                                orderby m.Width * m.Height descending
@@ -135,14 +139,14 @@ namespace SpriteGenerator
                 m.Draw(graphics, layoutProp.marginWidth);
                 Rectangle rectangle = new Rectangle(m.X + layoutProp.marginWidth, m.Y + layoutProp.marginWidth,
                     m.Width - layoutProp.distanceBetweenImages, m.Height - layoutProp.distanceBetweenImages);
-                cssFile.WriteLine(CssLine(cssClassNames[m.Name], rectangle));
+                cssFile.WriteLine(CssLine(cssClassNames[m.Name], rectangle, backgroundCss));
             }
 
             return resultSprite;
         }
 
         //Horizontal layout
-        private Image generateHorizontalLayout(StreamWriter cssFile)
+        private Image generateHorizontalLayout(StreamWriter cssFile, string backgroundCss)
         {
             //Calculating result image dimension.
             int width = 0;
@@ -164,7 +168,7 @@ namespace SpriteGenerator
             {
                 Rectangle rectangle = new Rectangle(actualXCoordinate, yCoordinate, images[i].Width, images[i].Height);
                 graphics.DrawImage(images[i], rectangle);
-                cssFile.WriteLine(CssLine(cssClassNames[i], rectangle));
+                cssFile.WriteLine(CssLine(cssClassNames[i], rectangle, backgroundCss));
                 actualXCoordinate += images[i].Width + layoutProp.distanceBetweenImages;
             }
 
@@ -172,7 +176,7 @@ namespace SpriteGenerator
         }
 
         //Vertical layout
-        private Image generateVerticalLayout(StreamWriter cssFile)
+        private Image generateVerticalLayout(StreamWriter cssFile, string backgroundCss)
         {
             //Calculating result image dimension.
             int height = 0;
@@ -194,14 +198,14 @@ namespace SpriteGenerator
             {
                 Rectangle rectangle = new Rectangle(xCoordinate, actualYCoordinate, images[i].Width, images[i].Height);
                 graphics.DrawImage(images[i], rectangle);
-                cssFile.WriteLine(CssLine(cssClassNames[i], rectangle));
+                cssFile.WriteLine(CssLine(cssClassNames[i], rectangle, backgroundCss));
                 actualYCoordinate += images[i].Height + layoutProp.distanceBetweenImages;
             }
 
             return resultSprite;
         }
 
-        private Image generateRectangularLayout(StreamWriter CSSFile)
+        private Image generateRectangularLayout(StreamWriter CSSFile, string backgroundCss)
         {
             //Calculating result image dimension.
             int imageWidth = images[0].Width;
@@ -226,7 +230,7 @@ namespace SpriteGenerator
                 {
                     Rectangle rectangle = new Rectangle(actualXCoordinate, actualYCoordinate, imageWidth, imageHeight);
                     graphics.DrawImage(images[i * layoutProp.imagesInRow + j], rectangle);
-                    CSSFile.WriteLine(CssLine(cssClassNames[i * layoutProp.imagesInRow + j], rectangle));
+                    CSSFile.WriteLine(CssLine(cssClassNames[i * layoutProp.imagesInRow + j], rectangle, backgroundCss));
                     actualXCoordinate += imageWidth + layoutProp.distanceBetweenImages;
                 }
                 actualYCoordinate += imageHeight + layoutProp.distanceBetweenImages;

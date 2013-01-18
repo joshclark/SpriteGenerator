@@ -10,6 +10,7 @@ namespace SpriteGenerator
         public string[] inputFilePaths; 
         public string outputSpriteFilePath;
         public string outputCssFilePath;
+        public string cssClassPrefix;
         public string layout;
         public int distanceBetweenImages; 
         public int marginWidth;
@@ -21,6 +22,7 @@ namespace SpriteGenerator
             inputFilePaths = null;
             outputSpriteFilePath = "";
             outputCssFilePath = "";
+            cssClassPrefix = "";
             layout = "";
             distanceBetweenImages = 0;
             marginWidth = 0;
