@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{C9EA2714-11AD-43D6-B882-42CB1D5126D4}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SpriteGenerator</RootNamespace>
     <AssemblyName>SpriteGenerator</AssemblyName>
@@ -58,6 +58,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>spritegenerator.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -26,10 +26,19 @@ namespace SpriteGenerator
 
         private static void GenerateFromConfigFile(string configFile)
         {
-            var config = new SpriteConfigFile(configFile);
-            var layoutProp = config.GenerateLayoutProperties();
-            var sprite = new Sprite(layoutProp);
-            sprite.Create();
+            try
+            {
+                var config = new SpriteConfigFile(configFile);
+                var layoutProp = config.GenerateLayoutProperties();
+                var sprite = new Sprite(layoutProp);
+                sprite.Create();
+            }
+            catch (Exception ex)
+            {
+                var fullError = ex.ToString().Replace("\n", "\n    ");
+                Console.WriteLine("ERROR: {0}\n\n    {1}", ex.Message, fullError);
+                Environment.ExitCode = 1;
+            }
         }
     }
 }
