@@ -26,6 +26,7 @@ namespace SpriteGenerator
         {
             GetData(out images, out cssClassNames);
 
+            EnsureDirectoryExists(layoutProp.outputCssFilePath);
             StreamWriter cssFile = File.CreateText(layoutProp.outputCssFilePath);
             Image resultSprite = null;
 
@@ -51,9 +52,18 @@ namespace SpriteGenerator
             }
 
             cssFile.Close();
+
+            EnsureDirectoryExists(layoutProp.outputSpriteFilePath);
             FileStream outputSpriteFile = new FileStream(layoutProp.outputSpriteFilePath, FileMode.Create);
             resultSprite.Save(outputSpriteFile, ImageFormat.Png);
             outputSpriteFile.Close();
+        }
+
+        private void EnsureDirectoryExists(string file)
+        {
+            var dir = Path.GetDirectoryName(file);
+            if ((dir != null) && (!Directory.Exists(dir)))
+                Directory.CreateDirectory(dir);
         }
 
         /// <summary>
