@@ -2,6 +2,7 @@ Sprite Generator
 ================
 
 https://github.com/joshclark/SpriteGenerator
+
 Github fork of http://spritegenerator.codeplex.com
 
 This will combine multiple images into a single large image and produce a CSS file containing 
@@ -31,30 +32,38 @@ setting in the .sprite file, add a line to the file of the form:
 
 
 SpriteFilePath
+
     The path for the composite file relative to the .sprite file.  The default value uses the file 
     name of the .sprite file.
 
 CssFilePath
+
     The path for the CSS file relative to the .sprite file.  The default value uses the file 
     name of the .sprite file.
 
 CssClassPrefix
+
 	A string to prefix to the begining of each CSS class created.  Teh default is "sprite".
 
 Layout
+
 	One of the supported image layouts: Automatic, Horizontal, Vertical, Rectangular.  Default is 
 	Automatic.
 
 DistanceBetweenImages
+
 	Amount of padding between images.  Default is 0.
 
 MarginWidth
+
 	Amount a margin around images. Default is 0.
 
 ImagesInRow
-	If the layout is Horizontal	or Rectangular the number of images to allow in a single row.
+
+	If the layout is Horizontal or Rectangular the number of images to allow in a single row.
 
 ImagesInColumn
-	If the layout is Vertical	or Rectangular the number of images to allow in a single column.
+
+	If the layout is Vertical or Rectangular the number of images to allow in a single column.
 
 
